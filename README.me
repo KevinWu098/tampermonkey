@@ -1,0 +1,154 @@
+# tampermonkey# =========================================================
+# Cursor Rules — Tampermonkey Userscripts (GitHub Repo)
+# =========================================================
+
+# ---------- Scope ----------
+# These rules apply to all files ending in:
+#   *.user.js
+# located anywhere in the repository.
+
+# =========================================================
+# REQUIRED METADATA HEADER
+# =========================================================
+
+- Every userscript MUST start with a Tampermonkey metadata block.
+- The metadata block MUST be the very first code in the file.
+- No blank lines are allowed before the `// ==UserScript==` line.
+
+Required fields (all mandatory, no omissions):
+
+- @name
+- @namespace
+- @version
+- @description
+- @match OR @include (at least one)
+- @grant
+- @downloadURL
+- @updateURL
+
+Rules:
+- @downloadURL and @updateURL MUST be identical.
+- Both URLs MUST point to the raw GitHub URL on the `main` branch.
+- The filename in the URL MUST exactly match the file name.
+
+Example (structure only, not literal values):
+
+// ==UserScript==
+// @name         <Human readable name>
+// @namespace    https://github.com/<org>/<repo>
+// @version      <semver>
+// @description  <short description>
+// @match        <url pattern>
+// @grant        none
+// @downloadURL  https://raw.githubusercontent.com/<org>/<repo>/main/<path>/<file>.user.js
+// @updateURL    https://raw.githubusercontent.com/<org>/<repo>/main/<path>/<file>.user.js
+// ==/UserScript==
+
+# =========================================================
+# VERSIONING RULES
+# =========================================================
+
+- @version MUST use semantic versioning: MAJOR.MINOR.PATCH
+  - Examples: 1.0.0, 1.2.3
+  - Date-based or non-numeric versions are NOT allowed.
+
+- Any behavior change, bug fix, or refactor MUST increment @version.
+- PRs that modify logic MUST include a version bump.
+- PRs without a required version bump SHOULD be flagged.
+
+# =========================================================
+# FILE NAMING & STRUCTURE
+# =========================================================
+
+- Filenames MUST:
+  - End with `.user.js`
+  - Use kebab-case
+  - Be descriptive but concise
+
+Examples:
+- chatgpt-cmd-enter.user.js
+- jira-bulk-transition.user.js
+
+- Each userscript MUST be self-contained.
+- Do NOT rely on build steps, bundlers, or transpilers.
+- Do NOT import other local files at runtime.
+
+# =========================================================
+# SCRIPT STRUCTURE
+# =========================================================
+
+- Scripts MUST be wrapped in an IIFE:
+  (function () { 'use strict'; ... })();
+
+- 'use strict' MUST be present at the top of the IIFE.
+
+- Top-level constants (selectors, config) MUST be declared near the top.
+- Helper functions MUST be defined before usage.
+- Avoid polluting the global scope.
+
+# =========================================================
+# EVENT HANDLING RULES
+# =========================================================
+
+- Keyboard or mouse listeners MUST:
+  - Be namespaced via function scope
+  - Avoid duplicate listeners
+  - Prefer capture phase ONLY when explicitly required (document why)
+
+- Calls to `preventDefault` or `stopPropagation` MUST be intentional
+  and limited to the smallest necessary scope.
+
+# =========================================================
+# DOM & OBSERVERS
+# =========================================================
+
+- DOM queries MUST be null-safe.
+- MutationObservers MUST:
+  - Be disconnected when no longer needed
+  - Observe the smallest possible subtree or attributes
+
+- Polling with setInterval SHOULD be avoided when observers suffice.
+
+# =========================================================
+# COMPATIBILITY & SAFETY
+# =========================================================
+
+- Do NOT rely on undocumented internal APIs unless unavoidable.
+- When relying on fragile selectors or aria attributes:
+  - Centralize them as constants
+  - Assume they may break and fail safely
+
+- Scripts MUST fail silently if required DOM elements are missing.
+
+# =========================================================
+# STYLE & CONSISTENCY
+# =========================================================
+
+- Prefer const/let over var.
+- Prefer early returns for guard conditions.
+- Use meaningful function and variable names.
+- Avoid unnecessary abstractions.
+
+- Comments SHOULD explain *why*, not *what*.
+
+# =========================================================
+# DOCUMENTATION
+# =========================================================
+
+- Each script SHOULD have:
+  - A short description in the header
+  - Optional inline comments for non-obvious behavior
+
+- Repositories SHOULD provide:
+  - An install link pointing to the raw GitHub file
+  - Clear instructions for updating versions
+
+# =========================================================
+# ENFORCEMENT GUIDANCE
+# =========================================================
+
+- Cursor SHOULD:
+  - Refuse to generate userscripts that violate these rules
+  - Suggest fixes when headers or versions are incorrect
+  - Automatically add missing @downloadURL/@updateURL when applicable
+  - Warn when logic changes are made without a version bump

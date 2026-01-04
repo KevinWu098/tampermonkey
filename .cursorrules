@@ -20,39 +20,30 @@
 
 # =========================================================
 
--   Every userscript MUST start with a Tampermonkey metadata block.
--   The metadata block MUST be the very first code in the file.
--   No blank lines are allowed before the `// ==UserScript==` line.
+- Every userscript MUST start with a Tampermonkey metadata block.
+- The metadata block MUST be the very first code in the file.
+- No blank lines are allowed before the `// ==UserScript==` line.
 
 Required fields (all mandatory, no omissions):
 
--   @name
--   @namespace
--   @version
--   @description
--   @match OR @include (at least one)
--   @grant
--   @downloadURL
--   @updateURL
+- @name
+- @namespace
+- @version
+- @description
+- @match OR @include (at least one)
+- @grant
+- @downloadURL
+- @updateURL
 
 Rules:
 
--   @downloadURL and @updateURL MUST be identical.
--   Both URLs MUST point to the raw GitHub URL on the `main` branch.
--   The filename in the URL MUST exactly match the file name.
+- @downloadURL and @updateURL MUST be identical.
+- Both URLs MUST point to the raw GitHub URL on the `main` branch.
+- The filename in the URL MUST exactly match the file name.
 
 Example:
 
-// ==UserScript==
-// @name <Human readable name>
-// @namespace https://github.com/kevinwu098/tampermonkey
-// @version <semver>
-// @description <short description>
-// @match <url pattern>
-// @grant none
-// @downloadURL https://raw.githubusercontent.com/kevinwu098/tampermonkey/main/scripts/<file>.user.js
-// @updateURL https://raw.githubusercontent.com/kevinwu098/tampermonkey/main/scripts/<file>.user.js
-// ==/UserScript==
+// ==UserScript== // @name <Human readable name> // @namespace https://github.com/kevinwu098/tampermonkey // @version <semver> // @description <short description> // @match <url pattern> // @grant none // @downloadURL https://raw.githubusercontent.com/kevinwu098/tampermonkey/main/scripts/<file>.user.js // @updateURL https://raw.githubusercontent.com/kevinwu098/tampermonkey/main/scripts/<file>.user.js // ==/UserScript==
 
 # =========================================================
 
@@ -60,14 +51,14 @@ Example:
 
 # =========================================================
 
--   @version MUST use semantic versioning: MAJOR.MINOR.PATCH
+- @version MUST use semantic versioning: MAJOR.MINOR.PATCH
+  - Examples: 1.0.0, 1.2.3
+  - Date-based or non-numeric versions are NOT allowed.
 
-    -   Examples: 1.0.0, 1.2.3
-    -   Date-based or non-numeric versions are NOT allowed.
-
--   Any behavior change, bug fix, or refactor MUST increment @version.
--   PRs that modify logic MUST include a version bump.
--   PRs without a required version bump SHOULD be flagged.
+- Any behavior change, bug fix, or refactor MUST increment @version.
+- PRs that modify logic MUST include a version bump.
+- PRs without a required version bump SHOULD be flagged.
+- HOWEVER, CHANGES WILL BE MANAGED PRIMARILY THROUGH A PRE-COMMIT HOOK, AND THUS DO NOT (USUALLY) REQUIRE CURSOR TO UPDATE THE VERSION
 
 # =========================================================
 
@@ -75,21 +66,21 @@ Example:
 
 # =========================================================
 
--   All userscripts MUST be placed in the `/scripts` directory.
+- All userscripts MUST be placed in the `/scripts` directory.
 
--   Filenames MUST:
-    -   End with `.user.js`
-    -   Use kebab-case
-    -   Be descriptive but concise
+- Filenames MUST:
+  - End with `.user.js`
+  - Use kebab-case
+  - Be descriptive but concise
 
 Examples:
 
--   scripts/chatgpt-cmd-enter.user.js
--   scripts/jira-bulk-transition.user.js
+- scripts/chatgpt-cmd-enter.user.js
+- scripts/jira-bulk-transition.user.js
 
--   Each userscript MUST be self-contained.
--   Do NOT rely on build steps, bundlers, or transpilers.
--   Do NOT import other local files at runtime.
+- Each userscript MUST be self-contained.
+- Do NOT rely on build steps, bundlers, or transpilers.
+- Do NOT import other local files at runtime.
 
 # =========================================================
 
@@ -97,14 +88,13 @@ Examples:
 
 # =========================================================
 
--   Scripts MUST be wrapped in an IIFE:
-    (function () { 'use strict'; ... })();
+- Scripts MUST be wrapped in an IIFE: (function () { 'use strict'; ... })();
 
--   'use strict' MUST be present at the top of the IIFE.
+- 'use strict' MUST be present at the top of the IIFE.
 
--   Top-level constants (selectors, config) MUST be declared near the top.
--   Helper functions MUST be defined before usage.
--   Avoid polluting the global scope.
+- Top-level constants (selectors, config) MUST be declared near the top.
+- Helper functions MUST be defined before usage.
+- Avoid polluting the global scope.
 
 # =========================================================
 
@@ -112,14 +102,12 @@ Examples:
 
 # =========================================================
 
--   Keyboard or mouse listeners MUST:
+- Keyboard or mouse listeners MUST:
+  - Be namespaced via function scope
+  - Avoid duplicate listeners
+  - Prefer capture phase ONLY when explicitly required (document why)
 
-    -   Be namespaced via function scope
-    -   Avoid duplicate listeners
-    -   Prefer capture phase ONLY when explicitly required (document why)
-
--   Calls to `preventDefault` or `stopPropagation` MUST be intentional
-    and limited to the smallest necessary scope.
+- Calls to `preventDefault` or `stopPropagation` MUST be intentional and limited to the smallest necessary scope.
 
 # =========================================================
 
@@ -127,13 +115,12 @@ Examples:
 
 # =========================================================
 
--   DOM queries MUST be null-safe.
--   MutationObservers MUST:
+- DOM queries MUST be null-safe.
+- MutationObservers MUST:
+  - Be disconnected when no longer needed
+  - Observe the smallest possible subtree or attributes
 
-    -   Be disconnected when no longer needed
-    -   Observe the smallest possible subtree or attributes
-
--   Polling with setInterval SHOULD be avoided when observers suffice.
+- Polling with setInterval SHOULD be avoided when observers suffice.
 
 # =========================================================
 
@@ -141,13 +128,12 @@ Examples:
 
 # =========================================================
 
--   Do NOT rely on undocumented internal APIs unless unavoidable.
--   When relying on fragile selectors or aria attributes:
+- Do NOT rely on undocumented internal APIs unless unavoidable.
+- When relying on fragile selectors or aria attributes:
+  - Centralize them as constants
+  - Assume they may break and fail safely
 
-    -   Centralize them as constants
-    -   Assume they may break and fail safely
-
--   Scripts MUST fail silently if required DOM elements are missing.
+- Scripts MUST fail silently if required DOM elements are missing.
 
 # =========================================================
 
@@ -155,12 +141,12 @@ Examples:
 
 # =========================================================
 
--   Prefer const/let over var.
--   Prefer early returns for guard conditions.
--   Use meaningful function and variable names.
--   Avoid unnecessary abstractions.
+- Prefer const/let over var.
+- Prefer early returns for guard conditions.
+- Use meaningful function and variable names.
+- Avoid unnecessary abstractions.
 
--   Comments SHOULD explain _why_, not _what_.
+- Comments SHOULD explain _why_, not _what_.
 
 # =========================================================
 
@@ -168,14 +154,13 @@ Examples:
 
 # =========================================================
 
--   Each script SHOULD have:
+- Each script SHOULD have:
+  - A short description in the header
+  - Optional inline comments for non-obvious behavior
 
-    -   A short description in the header
-    -   Optional inline comments for non-obvious behavior
-
--   Repositories SHOULD provide:
-    -   An install link pointing to the raw GitHub file
-    -   Clear instructions for updating versions
+- Repositories SHOULD provide:
+  - An install link pointing to the raw GitHub file
+  - Clear instructions for updating versions
 
 # =========================================================
 
@@ -183,8 +168,8 @@ Examples:
 
 # =========================================================
 
--   Cursor SHOULD:
-    -   Refuse to generate userscripts that violate these rules
-    -   Suggest fixes when headers or versions are incorrect
-    -   Automatically add missing @downloadURL/@updateURL when applicable
-    -   Warn when logic changes are made without a version bump
+- Cursor SHOULD:
+  - Refuse to generate userscripts that violate these rules
+  - Suggest fixes when headers or versions are incorrect
+  - Automatically add missing @downloadURL/@updateURL when applicable
+  - Warn when logic changes are made without a version bump

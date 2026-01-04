@@ -1,6 +1,9 @@
 pre-commit:
   jobs:
-    - run: pnpm dlx ultracite fix
+    - name: bump-version
+      run: bash .lefthook/bump-version.sh
+    - name: lint
+      run: pnpm dlx ultracite fix
       glob:
         - "*.js"
         - "*.jsx"
